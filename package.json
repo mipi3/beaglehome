@@ -1,0 +1,37 @@
+{
+  "name": "beaglehome",
+  "description": "Home automation built on BeagleBone",
+  "version": "0.1.0",
+  "homepage": "https://github.com/mipi3/beaglehome",
+  "author": {
+    "name": "Mindaugas Pielikis",
+    "email": "m.pielikis@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mipi3/beaglehome.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mipi3/beaglehome/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/mipi3/beaglehome/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "lib/beaglehome",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt nodeunit"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-jshint": "^0.6.5",
+    "grunt-contrib-nodeunit": "^0.2.2",
+    "grunt-contrib-watch": "^0.5.3"
+  },
+  "keywords": []
+}

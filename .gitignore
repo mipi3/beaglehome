@@ -1,0 +1,3 @@
+node_modules
+# Ignore all emacs backup files
+*~
