@@ -1,7 +1,7 @@
 'use strict';
 
+//var nodeunit = require('nodeunit');
 // var beaglehome = require('../lib/beaglehome.js');
-var sleep = require('sleep');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -24,56 +24,170 @@ var sleep = require('sleep');
 */
 
 var beaglehome = {
-   loadSwitcher: function() {
-     return {
-       start: function() {
-     }
-  };
-};
+    loadSwitcher: function(config, board) {
+        
+        return {
+            init: function() {
+                for (var pin in config.pins) {
+                    var details = config.pins[pin];
+                    board.pinMode(pin, details.type);
+                    if (details.type === 'output') {
+                        board.digitalWrite(pin, 0);
+                    }
+                }
+            },
+            start: function() {
+                
+                var getLinkPin = function(id) {
+                    for (var pin in config.pins) {
+                        var o = config.pins[pin];
+                        if (o.id === id) {
+                            return pin;
+                        }
+                    }
 
+                    return null;
+                };
+
+                var check = function() {
+
+                    var onRead = function(outPin) {
+			return function(x) {
+                            var write = x.value === 1 ? 1 : 0;
+                            board.digitalWrite(outPin, write);
+			};
+                    };
+
+                    for (var i = 0; i < config.links.length; i++) {
+                        var link = config.links[i];
+                        var outPin = getLinkPin(link.out);
+                        var inPin = getLinkPin(link.in);
+                        board.digitalRead(inPin, onRead(outPin));
+                    }
+                };
+                setInterval(check,100);
+            }
+        };
+    }
+};
 
 var createFakeBoard = function() {
   
-  var pins = [];
+  var pins = {};
+  var pinModes = {};
   var changed = function() { };
   
   return {
-      getPin: function(name) {
-	  return pins[name];
+      pins: pins,
+      pinMode: function(name, mode) {
+          pinModes[name] = mode;
+          if (mode === 'input') {
+              pins[name] = 0;
+          }
       },
-      setPin: function(name, value) {
-	  pins[name] = value;
-          changed();
+      getPinMode: function(name, h) {
+          h(pinModes[name]);
       },
       onPinChanged: function(handler) {
           changed = handler;
+      },
+      digitalRead: function(name, handler) {
+          handler({value: pins[name]});
+      },
+      digitalWrite: function(name, value) {
+          pins[name] = value;
+          changed(name);
       }
     };
 };
 
-exports['switcher reacts to board change'] = {
-  'when config': function(test) {
+exports['input state changes output state'] = {
+  'one-to-one config. Turn on.': function(test) {
     
-    var board = createFakeBoard(alue) {});
+    var board = createFakeBoard();
     var config = {
 	pins: {
-	    'P8_13': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
-	    'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
+            'P8_13': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
+            'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
         },
 	links: [
-            {'s_k-1': 'r_k-1'}
+            { in:['s_k-1'], out:'r_k-1' }
         ]
     };
 
     var switcher = beaglehome.loadSwitcher(config, board);
-
-    switcher.start();
+    
+    switcher.init();
+    test.equal(board.pins['P8_14'], 0);
+    test.equal(board.pins['P8_13'], 0);
 
     board.onPinChanged(function() {
-        test.equal(board.getPin('P22'), false);
+	board.onPinChanged(function() {});
+        test.equal(board.pins['P8_14'], 1);
         test.done();
     });
 
-    board.setPin('P21', true);
+    switcher.start();
+
+    board.pins['P8_13'] = 1;
+  },
+  'one-to-one config. Turn off.': function(test) {
+
+    var board = createFakeBoard();
+    var config = {
+    pins: {
+            'P8_13': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
+            'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
+        },
+    links: [
+            { in:['s_k-1'], out:'r_k-1' }
+        ]
+    };
+
+    var switcher = beaglehome.loadSwitcher(config, board);
+    
+    switcher.init();
+    board.pins['P8_14'] = 1;
+    board.pins['P8_13'] = 1;
+
+    board.onPinChanged(function() {
+        board.onPinChanged(function() {});
+        test.equal(board.pins['P8_14'], 0);
+        test.done();
+    });
+
+    switcher.start();
+
+    board.pins['P8_13'] = 0;
+  },
+  'many-to-one config. Turn off.': function(test) {
+
+    var board = createFakeBoard();
+    var config = {
+    pins: {
+            'P8_11': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
+            'P8_13': { id: 's_k-2', type: 'input', name: 'kitchen-2'},
+            'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
+        },
+    links: [
+            { in:['s_k-1'], out:'r_k-1' }
+        ]
+    };
+
+    var switcher = beaglehome.loadSwitcher(config, board);
+    
+    switcher.init();
+    board.pins['P8_14'] = 1;
+    board.pins['P8_13'] = 1;
+
+    board.onPinChanged(function() {
+        board.onPinChanged(function() {});
+        test.equal(board.pins['P8_14'], 0);
+        test.done();
+    });
+
+    switcher.start();
+
+    board.pins['P8_13'] = 0;
   }
 };
