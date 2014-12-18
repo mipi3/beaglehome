@@ -111,7 +111,7 @@ exports['input state changes output state'] = {
             'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
         },
 	links: [
-            { in:['s_k-1'], out:'r_k-1' }
+            { in:'s_k-1', out:'r_k-1' }
         ]
     };
 
