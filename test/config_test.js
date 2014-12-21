@@ -28,40 +28,54 @@ var _ = require('lodash');
 var group = {
     create: function(config) {
 
-        var inPins = [];
-	var outPins = [];
+        var inPins = {};
+	var outPins = {};
 
 	var getLinkPin = function(id) {
-            return _.find(config.pins, function(pin) {
-		return config.pins[pin].id === id;
-            });
+            console.log('---' + id);
+            var a;
+            for (a in config.pins) {
+                console.log(config.pins[a].id);
+                if (config.pins[a].id === id) {
+                    console.log('result ' + id);
+                    return a;
+                }
+            }
+            return undefined;
         };
+        
+        var setInPin = function(num) { inPins[getLinkPin(num)] = 0; };
+        var setOutPin = function(num) { outPins[getLinkPin(num)] = 0; };
 
 	for (var i = 0; i < config.links.length; i++) {
             var link = config.links[i];
-            var outPin = getLinkPin(link.out);
-            var inPin = getLinkPin(link.in);
 
-            if (inPin !== null) {
-		inPins[inPins.length] = inPin;
-            }
-            if (outPin !== null) {
-		outPins[outPins.length] = outPin;
-            }
+            _.forEach(link.in, setInPin);
+            setOutPin(link.out);
         }
 
 	return {
             getInPins: function() {
-		return inPins;
+		return _.reduce(inPins, function(result, num, key) {
+                    if (key !== undefined) {
+                        result[result.length] = key;
+                    }
+                    return result;
+                }, []);
             },
-            getOutPins: function(pinResults) {
-                return pinResults;
+            getOutPins: function() {
+		return _.reduce(outPins, function(result, num, key) {
+                    if (key !== undefined) {
+                        result[result.length] = key;
+                    }
+                    return result;
+                }, []);
             }		
 	};
     }
 };
 
-exports['asdfsfd'] = {
+exports['super duper test'] = {
     '.': function(test) {
         var config = {
             pins: {
@@ -81,11 +95,12 @@ exports['asdfsfd'] = {
 	test.equal(inPins.length, 1);
 	test.equal(inPins[0], 'P8_11');
 
-	var outPins = control.getOutPins([{pin:'P8_11',res:1}]);
+        // out pins should be
+	// var outPins = control.getOutPins([{pin:'P8_11',res:1}]);
 
-        test.equal(outPins.length, 1);
-	test.equal(outPins[0].pin, 'P8_14');
-	test.equal(outPins[0].res, 1);
+        // test.equal(outPins.length, 1);
+	// test.equal(outPins[0].pin, 'P8_14');
+	// test.equal(outPins[0].res, 1);
         
         test.done();
     }
