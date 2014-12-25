@@ -32,12 +32,9 @@ var group = {
 	var outPins = {};
 
 	var getLinkPin = function(id) {
-            console.log('---' + id);
             var a;
             for (a in config.pins) {
-                console.log(config.pins[a].id);
                 if (config.pins[a].id === id) {
-                    console.log('result ' + id);
                     return a;
                 }
             }
@@ -58,7 +55,7 @@ var group = {
             getInPins: function() {
 		return _.reduce(inPins, function(result, num, key) {
                     if (key !== undefined) {
-                        result[result.length] = key;
+                        result[result.length] = { pin: key, value: 0 };
                     }
                     return result;
                 }, []);
@@ -66,7 +63,7 @@ var group = {
             getOutPins: function() {
 		return _.reduce(outPins, function(result, num, key) {
                     if (key !== undefined) {
-                        result[result.length] = key;
+                        result[result.length] = { pin: key, value: 0 };
                     }
                     return result;
                 }, []);
@@ -75,8 +72,8 @@ var group = {
     }
 };
 
-exports['super duper test'] = {
-    '.': function(test) {
+exports['config tests'] = {
+    'one input pin and one output pin': function(test) {
         var config = {
             pins: {
 		'P8_11': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
@@ -89,19 +86,66 @@ exports['super duper test'] = {
         };
 
 	var control = group.create(config);
-
 	var inPins = control.getInPins();
+	var outPins = control.getOutPins();
 
 	test.equal(inPins.length, 1);
-	test.equal(inPins[0], 'P8_11');
-
-        // out pins should be
-	// var outPins = control.getOutPins([{pin:'P8_11',res:1}]);
-
-        // test.equal(outPins.length, 1);
-	// test.equal(outPins[0].pin, 'P8_14');
-	// test.equal(outPins[0].res, 1);
+	test.equal(inPins[0].pin, 'P8_11');
+	test.equal(inPins[0].value, 0);
+	test.equal(outPins.length, 1);
+	test.equal(outPins[0].pin, 'P8_14');
+	test.equal(outPins[0].value, 0);
         
         test.done();
-    }
+    },
+    'two input pin and one output pin': function(test) {
+        var config = {
+            pins: {
+		'P8_11': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
+		'P8_13': { id: 's_k-2', type: 'input', name: 'kitchen-2'},
+		'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
+            },
+            links: [
+		{ in:['s_k-1', 's_k-2'], out:'r_k-1' }
+            ]
+        };
+
+	var control = group.create(config);
+	var inPins = control.getInPins();
+	var outPins = control.getOutPins();
+
+	test.equal(inPins.length, 2);
+	test.equal(inPins[0].pin, 'P8_11');
+	test.equal(inPins[0].value, 0);
+	test.equal(inPins[1].pin, 'P8_13');
+	test.equal(inPins[1].value, 0);
+	test.equal(outPins.length, 1);
+	test.equal(outPins[0].pin, 'P8_14');
+	test.equal(outPins[0].value, 0);
+        
+        test.done();
+    },
+    '': function(test) {
+        var config = {
+            pins: {
+                'P8_11': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
+                'P8_13': { id: 's_k-2', type: 'input', name: 'kitchen-2'},
+                'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
+            },
+            links: [
+                { in:['s_k-1', 's_k-2'], out:'r_k-1' }
+            ]
+        };
+
+        var control = group.create(config);
+
+        control.setInPin('P8_11', 1);
+        var outPins = control.getOutPins();
+
+        test.equal(outPins.length, 1);
+        test.equal(outPins[0].pin, 'P8_14');
+        test.equal(outPins[0].value, 1);
+        
+        test.done();
+     }
 };
