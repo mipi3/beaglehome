@@ -1,6 +1,7 @@
 'use strict';
 
 var beaglehome = require('../lib/beaglehome.js');
+var control = require('../lib/control.js');
 
 var createFakeBoard = function() {
   
@@ -45,8 +46,9 @@ exports['input state changes output state'] = {
             { in:['s_k-1'], out:'r_k-1' }
         ]
     };
-
-    var switcher = beaglehome.loadSwitcher(config, board);
+      
+    var ctrl = control.create(config);
+    var switcher = beaglehome.loadSwitcher(ctrl, board);
     
     switcher.init();
     test.equal(board.pins['P8_14'], 0);
@@ -75,8 +77,9 @@ exports['input state changes output state'] = {
             { in:['s_k-1'], out:'r_k-1' }
         ]
     };
-
-    var switcher = beaglehome.loadSwitcher(config, board);
+    
+    var ctrl = control.create(config);
+    var switcher = beaglehome.loadSwitcher(ctrl, board);
     
     switcher.init();
     board.pins['P8_14'] = 1;
@@ -106,8 +109,9 @@ exports['input state changes output state'] = {
             { in:['s_k-1'], out:'r_k-1' }
         ]
     };
-
-    var switcher = beaglehome.loadSwitcher(config, board);
+    
+    var ctrl = control.create(config);
+    var switcher = beaglehome.loadSwitcher(ctrl, board);
     
     switcher.init();
     board.pins['P8_14'] = 1;
