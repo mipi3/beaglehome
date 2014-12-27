@@ -1,75 +1,6 @@
 'use strict';
 
-//var nodeunit = require('nodeunit');
-// var beaglehome = require('../lib/beaglehome.js');
-
-/*
-  ======== A Handy Little Nodeunit Reference ========
-  https://github.com/caolan/nodeunit
-
-  Test methods:
-    test.expect(numAssertions)
-    test.done()
-  Test assertions:
-    test.ok(value, [message])
-    test.equal(actual, expected, [message])
-    test.notEqual(actual, expected, [message])
-    test.deepEqual(actual, expected, [message])
-    test.notDeepEqual(actual, expected, [message])
-    test.strictEqual(actual, expected, [message])
-    test.notStrictEqual(actual, expected, [message])
-    test.throws(block, [error], [message])
-    test.doesNotThrow(block, [error], [message])
-    test.ifError(value)
-*/
-
-var beaglehome = {
-    loadSwitcher: function(config, board) {
-        
-        return {
-            init: function() {
-                for (var pin in config.pins) {
-                    var details = config.pins[pin];
-                    board.pinMode(pin, details.type);
-                    if (details.type === 'output') {
-                        board.digitalWrite(pin, 0);
-                    }
-                }
-            },
-            start: function() {
-                
-                var getLinkPin = function(id) {
-                    for (var pin in config.pins) {
-                        var o = config.pins[pin];
-                        if (o.id === id) {
-                            return pin;
-                        }
-                    }
-
-                    return null;
-                };
-
-                var check = function() {
-
-                    var onRead = function(outPin) {
-			return function(x) {
-                            var write = x.value === 1 ? 1 : 0;
-                            board.digitalWrite(outPin, write);
-			};
-                    };
-
-                    for (var i = 0; i < config.links.length; i++) {
-                        var link = config.links[i];
-                        var outPin = getLinkPin(link.out);
-                        var inPin = getLinkPin(link.in);
-                        board.digitalRead(inPin, onRead(outPin));
-                    }
-                };
-                setInterval(check,100);
-            }
-        };
-    }
-};
+var beaglehome = require('../lib/beaglehome.js');
 
 var createFakeBoard = function() {
   
@@ -111,7 +42,7 @@ exports['input state changes output state'] = {
             'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
         },
 	links: [
-            { in:'s_k-1', out:'r_k-1' }
+            { in:['s_k-1'], out:'r_k-1' }
         ]
     };
 
@@ -120,6 +51,7 @@ exports['input state changes output state'] = {
     switcher.init();
     test.equal(board.pins['P8_14'], 0);
     test.equal(board.pins['P8_13'], 0);
+    console.log('d1');
 
     board.onPinChanged(function() {
 	board.onPinChanged(function() {});
@@ -151,9 +83,10 @@ exports['input state changes output state'] = {
     board.pins['P8_13'] = 1;
 
     board.onPinChanged(function() {
-        board.onPinChanged(function() {});
-        test.equal(board.pins['P8_14'], 0);
-        test.done();
+        if (board.pins['P8_14']) {
+            board.onPinChanged(function() {});
+            test.done();
+        }
     });
 
     switcher.start();
@@ -181,9 +114,10 @@ exports['input state changes output state'] = {
     board.pins['P8_13'] = 1;
 
     board.onPinChanged(function() {
-        board.onPinChanged(function() {});
-        test.equal(board.pins['P8_14'], 0);
-        test.done();
+        if (board.pins['P8_14']) {
+            board.onPinChanged(function() {});
+            test.done();
+        }
     });
 
     switcher.start();
