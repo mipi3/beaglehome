@@ -12,9 +12,11 @@ switcher.init();
 switcher.start();
 
 var handle = {};
-handle["/"] = RequestHandlers.dashboard(ctrl);
+handle["/"] = RequestHandlers.public;
+handle["/app.js"] = RequestHandlers.public;
+handle["/api/dashboard"] = RequestHandlers.dashboard(ctrl);
 
-Server.start(Router.route, handle);
+Server.start(Router.route, handle, 8888);
 
 function createFakeBoard() {
   
@@ -44,4 +46,4 @@ function createFakeBoard() {
           changed(name);
       }
     };
-};
+}

@@ -21,7 +21,7 @@
 
 var DEBUG = false;
 
-function route(handle, pathname, response, postData) {
+function route(handle, pathname, response, postData, request) {
     if (DEBUG === true) {
         console.log("About to route a request for " + pathname);
     }
@@ -30,7 +30,7 @@ function route(handle, pathname, response, postData) {
       if (DEBUG === true) {
         console.log("postData in router: " + postData);
       }
-     handle[pathname](response, postData);
+     handle[pathname](response, postData, request);
   } else {
     if (DEBUG === true) {
         console.log("No request handler found for " + pathname);
