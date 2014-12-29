@@ -18,6 +18,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+var finalhandler = require('finalhandler');
+var serveStatic = require('serve-static');
+
+var serve = serveStatic('public', {'index': ['index.html', 'index.htm']});
 
 var DEBUG = false;
 
@@ -26,19 +30,22 @@ function route(handle, pathname, response, postData, request) {
         console.log("About to route a request for " + pathname);
     }
 
-  if (typeof handle[pathname] === 'function') {
-      if (DEBUG === true) {
-        console.log("postData in router: " + postData);
-      }
-     handle[pathname](response, postData, request);
-  } else {
-    if (DEBUG === true) {
-        console.log("No request handler found for " + pathname);
+    if (typeof handle[pathname] === 'function') {
+        if (DEBUG === true) {
+            console.log("postData in router: " + postData);
+        }
+        handle[pathname](response, postData, request);
+    } else {
+        var done = finalhandler(request, response);
+        serve(request, response, done);
+        
+        // if (DEBUG === true) {
+        //     console.log("No request handler found for " + pathname);
+        // }
+        // response.writeHead(404, {"Content-Type": "text/plain"});
+        // response.write("404 Not found");
+        // response.end();
     }
-    response.writeHead(404, {"Content-Type": "text/plain"});
-    response.write("404 Not found");
-    response.end();
-  }
 }
 
 exports.route = route;

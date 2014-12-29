@@ -1,9 +1,4 @@
 //var querystring = require('qs');
-var finalhandler = require('finalhandler');
-var serveStatic = require('serve-static');
-
-var serve = serveStatic('public', {'index': ['index.html', 'index.htm']});
-
 exports.dashboard = function(ctrl) {
     return function(response) {
 
@@ -18,7 +13,3 @@ exports.dashboard = function(ctrl) {
     };
 };
 
-exports.public = function(res, postData, req) {
-    var done = finalhandler(req, res);
-    serve(req, res, done);
-};
