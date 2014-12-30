@@ -38,13 +38,6 @@ function route(handle, pathname, response, postData, request) {
     } else {
         var done = finalhandler(request, response);
         serve(request, response, done);
-        
-        // if (DEBUG === true) {
-        //     console.log("No request handler found for " + pathname);
-        // }
-        // response.writeHead(404, {"Content-Type": "text/plain"});
-        // response.write("404 Not found");
-        // response.end();
     }
 }
 
