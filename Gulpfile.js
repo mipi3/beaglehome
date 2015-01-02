@@ -49,9 +49,12 @@ gulp.task('browserify', function() {
 });
 
 gulp.task('views', function() {
-    gulp.src('client/index.html')
+    gulp.src('client/*.*')
     .pipe(gulp.dest('public/'));
 
+    gulp.src('client/styles/*.css')
+    .pipe(gulp.dest('public/css/'));
+    
     gulp.src('client/views/**/*')
     .pipe(gulp.dest('public/views/'));
 });
