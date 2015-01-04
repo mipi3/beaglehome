@@ -1,5 +1,7 @@
 node_modules
+bower_components
 # Ignore all emacs backup files
 *~
 \#*\#
 public/*
+

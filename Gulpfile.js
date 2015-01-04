@@ -1,15 +1,17 @@
 'use strict';
 
-var gulp = require('gulp'),
-    jshint = require('gulp-jshint'),
-    source = require('vinyl-source-stream'),
-    browserify = require('browserify'),
-    concat = require('gulp-concat'),
-    sass = require('gulp-sass'),
-    autoprefixer = require('gulp-autoprefixer'),
-    refresh = require('gulp-livereload'),
-    nodemon = require('gulp-nodemon'),
-    nodeunitRunner = require("gulp-nodeunit-runner");
+var gulp = require('gulp')
+   , jshint = require('gulp-jshint')
+   , source = require('vinyl-source-stream')
+   , browserify = require('browserify')
+   , concat = require('gulp-concat')
+   , sass = require('gulp-sass')
+   , autoprefixer = require('gulp-autoprefixer')
+   , refresh = require('gulp-livereload')
+   , nodemon = require('gulp-nodemon')
+   , nodeunitRunner = require("gulp-nodeunit-runner")
+   , protractor = require('gulp-protractor').protractor;
+
 
 // var expressServer = require('./server');
 // gulp.task('serve_', function() {
@@ -25,10 +27,13 @@ gulp.task('serve', function () {
   });
 });
 
-gulp.task('dev', ['views', 'styles', 'lint', 'test', 'browserify', 'watch'], function() {});
-
 gulp.task('lint', function() {
-  gulp.src(['lib/**/*.js','server/**/*.js', 'client/scripts/**/*.js', 'main.js', 'test/**/*.js'])
+  gulp.src([
+      'lib/**/*.js',
+      'server/**/*.js',
+      'client/scripts/**/*.js',
+      'main.js',
+      'test/**/*.js'])
   .pipe(jshint())
   .pipe(jshint.reporter('default'));
 });
@@ -44,7 +49,7 @@ gulp.task('browserify', function() {
   var bundleStream = browserify({
     entries: ['./client/scripts/main.js'],
     debug: true
-  }).bundle().pipe(source('core.js'));
+  }).bundle().pipe(source('main.js'));
   return bundleStream.pipe(gulp.dest('./public/js'));
 });
 
@@ -54,14 +59,37 @@ gulp.task('views', function() {
 
     gulp.src('client/styles/*.css')
     .pipe(gulp.dest('public/css/'));
+
+    gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
+    .pipe(gulp.dest('public/css/'));
+    
+    gulp.src([
+        'client/lib/modernizr*.min.js',
+        'bower_components/bootstrap/dist/js/bootstrap.min.js',
+        'bower_components/jquery/dist/jquery.min.*'])
+    .pipe(gulp.dest('public/js/vendor'));
+
+    gulp.src('client/lib/plugins.js')
+    .pipe(gulp.dest('public/js/'));
     
     gulp.src('client/views/**/*')
     .pipe(gulp.dest('public/views/'));
 });
 
 gulp.task('test', ['lint'], function() {
-  gulp.src('test/**/*_test.js')
+  gulp.src('test/*_test.js')
   .pipe(nodeunitRunner());
+});
+
+gulp.task('e2e', ['serve'], function() {
+  return gulp.src(['./test/e2e/*_spec.js'])
+  .pipe(protractor({
+    configFile: 'protractor.conf.js',
+  }))
+  .on('error', function(e) { console.log(e); })
+  .on('end', function() {
+    connect.serverClose();
+  });
 });
 
 gulp.task('watch', ['serve', 'lint'], function() {
@@ -69,9 +97,11 @@ gulp.task('watch', ['serve', 'lint'], function() {
   refresh.listen();
 
   // Watch our scripts, and when they change run lint and browserify
-  gulp.watch(['client/scripts/*.js', 'client/scripts/**/*.js'],[
+  gulp.watch(['client/scripts/*.js', 'client/scripts/**/*.js', 'test/**/*.js'],[
     'lint',
-    'browserify'
+    'test',
+    'browserify',
+//    'e2e'
   ]);
 
   // Watch our sass files
@@ -87,5 +117,7 @@ gulp.task('watch', ['serve', 'lint'], function() {
   gulp.watch('./public/**').on('change', refresh.changed);
 
 });
+
+gulp.task('dev', ['views', 'styles', 'lint', 'test', 'browserify', 'watch', 'e2e'], function() {});
 
 gulp.task('default', ['dev']);
