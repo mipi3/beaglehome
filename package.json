@@ -36,8 +36,8 @@
     "serve-static": "^1.7.1"
   },
   "browser": {
-    "angular": "./client/lib/angular/angular-index.js",
-    "angular-route": "./client/lib/angular/angular-route.min.js"
+    "angular": "./client/vendor/angular/angular-index.js",
+    "angular-route": "./client/vendor/angular/angular-route.min.js"
   },
   "devDependencies": {
     "browserify": "^6.1.0",
