@@ -51,13 +51,6 @@ gulp.task('views', function() {
         .pipe(gulp.dest('public/views/'));
 });
 
-gulp.task('vendor', function() {
-
-    gulp.src('client/vendor/modernizr/modernizr*.min.js')
-        .pipe(gulp.dest('public/js'));
-
-});
-
 gulp.task('styles', function() {
 
     gulp.src([
@@ -84,8 +77,10 @@ gulp.task('client:lint', function() {
 
 gulp.task('browserify', function() {
     gulp.src([
-        'client/vendor/jquery/jquery.min.*',
-        'client/vendor/bootstrap/js/bootstrap.min.js'])
+        'client/vendor/modernizr/modernizr*.min.js',
+        'client/vendor/jquery/jquery.min.js',
+        'client/vendor/bootstrap/js/bootstrap.min.js',
+        'client/vendor/bootstrap-switch/js/bootstrap-switch.min.js'])
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest('public/js'));
 
@@ -113,7 +108,7 @@ gulp.task('e2e', ['serve'], function() {
         });
 });
 
-gulp.task('client:prepare', ['views', 'styles', 'vendor'], function() {});
+gulp.task('client:prepare', ['views', 'styles'], function() {});
 gulp.task('client:compile', ['client:lint', 'client:test', 'browserify'], function() {});
 
 gulp.task('watch', ['serve', 'client:lint'], function() {

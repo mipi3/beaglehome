@@ -1,40 +1,39 @@
-//
-// Copyright (C) 2012 - Cabin Programs, Ken Keller 
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 var http = require("http");
+var WebSocketServer = require('ws').Server;
 var url = require("url");
 var DEBUG = false;
 
 function start(route, handle, port) {
+
     function onRequest(request, response) {
         var pathname = url.parse(request.url).pathname;
         var postData = url.parse(request.url).query;
+        
         if (DEBUG === true) {
             console.log("Request for " + pathname + " received.");
             console.log("postData " + postData);
         }
+        
         route(handle, pathname, response, postData, request);
     }
 
-    http.createServer(onRequest).listen(port);
+    var server = http.createServer(onRequest).listen(port);
+    var wss = new WebSocketServer({ server: server });
+
+    wss.broadcast = function(data) {
+        for (var i in this.clients) {
+            this.clients[i].send(data);
+        }
+    };
+
+    // wss.on('connection', function connection(ws) {
+    //     ws.on('message', function incoming(message) {
+    //         console.log('received: %s', message);
+    //     });
+
+    //     ws.send('something');
+    // });
+    
     console.log("Server has started on port " + port);
 }
 
