@@ -11,6 +11,8 @@ var switcher = Bh.loadSwitcher(ctrl, board);
 switcher.init();
 switcher.start();
 
+ctrl.setInPin('P8_13', 1);
+
 var handle = {};
 handle["/api/dashboard"] = RequestHandlers.dashboard(ctrl);
 

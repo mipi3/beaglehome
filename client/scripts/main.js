@@ -18,4 +18,4 @@ app.config(function($routeProvider) {
 
 app.controller('dashboardCtrl', require('./controllers/dashboard'));
 
-app.directive('switch', require('./directives/bootstrap-switch'));
+app.directive('bsSwitch', require('./directives/bootstrap-switch'));
