@@ -20,7 +20,7 @@ var gulp = require('gulp')
 // });
 
 gulp.task('serve', function () {
-    nodemon({ script: 'main.js', ext: 'json js', ignore: ['public/*', 'client/*'] })
+    nodemon({ script: './server/main.js', ext: 'json js', ignore: ['public/*', 'client/*'] })
         .on('change', ['server:lint'])
         .on('restart', function () {
             console.log('Restarted webserver')
@@ -29,16 +29,14 @@ gulp.task('serve', function () {
 
 gulp.task('server:lint', function() {
     gulp.src([
-        'lib/**/*.js',
         'server/**/*.js',
-        'main.js',
         'test/server/**/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
 
 gulp.task('server:test', ['server:lint'], function() {
-    gulp.src('test/server/*_test.js')
+    gulp.src('test/core/*_test.js')
         .pipe(nodeunitRunner());
 });
 
@@ -110,6 +108,7 @@ gulp.task('e2e', ['serve'], function() {
 
 gulp.task('client:prepare', ['views', 'styles'], function() {});
 gulp.task('client:compile', ['client:lint', 'client:test', 'browserify'], function() {});
+gulp.task('server:compile', ['server:lint', 'server:test'], function() {});
 
 gulp.task('watch', ['serve', 'client:lint'], function() {
     refresh.listen();
@@ -118,10 +117,17 @@ gulp.task('watch', ['serve', 'client:lint'], function() {
         'client/scripts/*.js',
         'client/scripts/**/*.js',
         'test/**/*.js'],[
-            
-        'client:compile',
+            'client:compile'
     ]);
 
+    gulp.watch([
+        'server/*.js',
+        'server/**/*.js',
+        'test/server/**/*.js',
+        'test/core/**/*.js'],[
+            'server:compile'
+    ]);
+    
     gulp.watch(['client/styles/**/*.scss'], [
         'styles'
     ]);
@@ -133,5 +139,5 @@ gulp.task('watch', ['serve', 'client:lint'], function() {
     gulp.watch('./public/**').on('change', refresh.changed);
 });
 
-gulp.task('dev', ['client:prepare', 'client:compile', 'watch'], function() {});
+gulp.task('dev', ['server:compile', 'client:prepare', 'client:compile', 'watch'], function() {});
 gulp.task('default', ['dev']);
