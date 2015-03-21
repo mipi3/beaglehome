@@ -1,0 +1,19 @@
+<ul class="nav nav-pills">
+  <li role="presentation" class="active"><a href="#">virtuve<span class="badge">1</span></a></li>
+  <li role="presentation"><a href="#">lounge</a></li>
+  <li role="presentation"><a href="#">bedroom</a></li>
+  <li role="presentation"><a href="#">bath</a></li>
+  <li role="presentation"><a href="#">hall</a></li>
+</ul>
+
+<div style="margin-top:10px">
+
+  <div class="input-group" ng-repeat="i in data.out">
+    <span class="input-group-addon">{{ i.pin }}</span>
+    <!-- <input type="checkbox" ng-model="i.value" switch> -->
+    <!-- <switch ng-model="i.value" /> -->
+    <input bs-switch type="checkbox" ng-model="i.value">
+    {{ i.value }}
+  </div>
+    
+</div>
