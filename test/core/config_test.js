@@ -1,6 +1,12 @@
 'use strict';
 
-var createCtrl = require('../../server/core/control.js');
+var EventEmitter = require('events').EventEmitter;
+var controlCtor = require('../../server/core/control.js');
+
+var createCtrl = function(config) {
+    var ee = new EventEmitter();
+    return controlCtor(config, ee);
+}
 
 exports['config tests'] = {
     'one input pin and one output pin': function(test) {
@@ -11,7 +17,7 @@ exports['config tests'] = {
 		'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
             },
             links: [
-		{ in:['s_k-1'], out:'r_k-1' }
+		{ name: 'switch1', room: 'kitchen', in:['s_k-1'], out:['r_k-1'] }
             ]
         };
 
@@ -36,7 +42,7 @@ exports['config tests'] = {
 		'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
             },
             links: [
-		{ in:['s_k-1', 's_k-2'], out:'r_k-1' }
+		{ in:['s_k-1', 's_k-2'], out: ['r_k-1'] }
             ]
         };
 
@@ -63,7 +69,7 @@ exports['config tests'] = {
                 'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
             },
             links: [
-                { in:['s_k-1', 's_k-2'], out:'r_k-1' }
+                { in:['s_k-1', 's_k-2'], out:['r_k-1'] }
             ]
         };
 

@@ -9,14 +9,8 @@ var poller = function(pins, read, interval, onPinChanged) {
     function setLastPins() {
         for (var i = 0; i < pins.length; i++) {
             var l = pins[i];
-            read(l, setLastPin(l));
+	    lastPin[l] = 0;
         }
-    }
-
-    function setLastPin(pin) {
-        return function(vv) {
-            lastPin[pin] = vv.value;
-        };
     }
 
     function checkWithLast(pin) {
@@ -33,7 +27,7 @@ var poller = function(pins, read, interval, onPinChanged) {
             read(l, checkWithLast(l));
         }
         
-        setLastPins();
+        //setLastPins();
     }
  
     return {

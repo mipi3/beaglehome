@@ -5,102 +5,117 @@ var control = require('../../server/core/control.js');
 var EventEmitter = require('events').EventEmitter;
 
 exports['input state changes output state'] = {
-  'one-to-one config. Turn on.': function(test) {
-    
-    var board = createFakeBoard();
-    var config = {
-	pins: {
-            'P8_13': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
-            'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
-        },
-	links: [
-            { in:['s_k-1'], out:'r_k-1' }
-        ]
-    };
+    'one-to-one config. Turn on.': function(test) {
+	
+	var board = createFakeBoard();
+	var config = {
+	    pins: {
+		'P8_13': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
+		'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
+            },
+	    links: [
+		{ name: 'group1', in:['s_k-1'], out:['r_k-1'] }
+            ]
+	};
 
-    var ee = new EventEmitter();      
-    var ctrl = control(config, ee.emit);
-    beaglehome.wire(ee, ctrl, board);
-    var switcher = beaglehome.loadSwitcher(ctrl, board, ee.emit);
-    
-    switcher.init();
-    test.equal(board.pins['P8_14'], 0);
-    test.equal(board.pins['P8_13'], 0);
-    console.log('d1');
+	var ee = new EventEmitter();
+	
+	var ctrl = control(config, ee);
+	beaglehome.wire(ee, ctrl, board);
+	var switcher = beaglehome.loadSwitcher(ctrl, board, ee);
+	
+	switcher.init();
 
-    board.onPinChanged(function() {
-	board.onPinChanged(function() {});
-        test.equal(board.pins['P8_14'], 1);
-        test.done();
-    });
-
-    switcher.start();
-
-    board.pins['P8_13'] = 1;
-  },
-  'one-to-one config. Turn off.': function(test) {
-
-    var board = createFakeBoard();
-    var config = {
-    pins: {
-            'P8_13': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
-            'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
-        },
-    links: [
-            { in:['s_k-1'], out:'r_k-1' }
-        ]
-    };
-    
-    var ctrl = control(config);
-    var switcher = beaglehome.loadSwitcher(ctrl, board);
-    
-    switcher.init();
-    board.pins['P8_14'] = 1;
-    board.pins['P8_13'] = 1;
-
-    board.onPinChanged(function() {
-        if (board.pins['P8_14']) {
-            board.onPinChanged(function() {});
+	board.onDigitalWriteAll(function() {
+	    board.onDigitalWriteAll(function() {});
+            test.equal(board.pins['P8_14'], 1);
             test.done();
-        }
-    });
+	});
 
-    switcher.start();
+	switcher.start();
 
-    board.pins['P8_13'] = 0;
-  },
-  'many-to-one config. Turn off.': function(test) {
+	board.pins['P8_13'] = 1;
+    },
+    'one-to-one config. Turn off.': function(test) {
 
-    var board = createFakeBoard();
-    var config = {
-    pins: {
-            'P8_11': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
-            'P8_13': { id: 's_k-2', type: 'input', name: 'kitchen-2'},
-            'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
-        },
-    links: [
-            { in:['s_k-1'], out:'r_k-1' }
-        ]
-    };
-    
-    var ctrl = control(config);
-    var switcher = beaglehome.loadSwitcher(ctrl, board);
-    
-    switcher.init();
-    board.pins['P8_14'] = 1;
-    board.pins['P8_13'] = 1;
+	var board = createFakeBoard();
+	var config = {
+	    pins: {
+		'P8_13': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
+		'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
+            },
+	    links: [
+		{ in:['s_k-1'], out:['r_k-1'] }
+            ]
+	};
+	
+	var ee = new EventEmitter();
+	var ctrl = control(config, ee);
+	beaglehome.wire(ee, ctrl, board);
+	var switcher = beaglehome.loadSwitcher(ctrl, board, ee);
+	
+	switcher.init();
 
-    board.onPinChanged(function() {
-        if (board.pins['P8_14']) {
-            board.onPinChanged(function() {});
-            test.done();
-        }
-    });
+	board.onDigitalWriteAll(function() {
+	    
+            test.equal(board.pins['P8_14'], 1);
+	    
+	    board.onDigitalWriteAll(function() {
 
-    switcher.start();
+		test.equal(board.pins['P8_14'], 0);
+		test.done();
+	    });
+	    
+	    board.pins['P8_13'] = 0;
+	});
 
-    board.pins['P8_13'] = 0;
-  }
+	switcher.start();
+
+	board.pins['P8_13'] = 1;
+    },
+    'many-to-one config. Turn off.': function(test) {
+
+	var board = createFakeBoard();
+	var config = {
+	    pins: {
+		'P8_11': { id: 's_k-1', type: 'input', name: 'kitchen-1'},
+		'P8_13': { id: 's_k-2', type: 'input', name: 'kitchen-2'},
+		'P8_14': { id: 'r_k-1', type: 'output', name: 'kitchen-lamp' }
+            },
+	    links: [
+		{ in:['s_k-1','s_k-2'], out:['r_k-1'] }
+            ]
+	};
+	
+	var ee = new EventEmitter();
+	var ctrl = control(config, ee);
+	beaglehome.wire(ee, ctrl, board);
+	var switcher = beaglehome.loadSwitcher(ctrl, board, ee);
+	
+	switcher.init();
+
+	board.onDigitalWriteAll(function() {
+
+            test.equal(board.pins['P8_14'], 1);
+	    
+	    board.onDigitalWriteAll(function() {
+		test.equal(board.pins['P8_14'], 0);
+
+		board.onDigitalWriteAll(function() {
+		    test.equal(board.pins['P8_14'], 1);
+		    test.done();
+		});
+
+		board.pins['P8_13'] = 0;
+	    });
+				    
+	    board.pins['P8_11'] = 1;
+	});
+
+	switcher.start();
+
+	board.pins['P8_13'] = 1;
+    }
 };
 
 function createFakeBoard() {
@@ -108,7 +123,14 @@ function createFakeBoard() {
   var pins = {};
   var pinModes = {};
   var changed = function() { };
-  
+  var changedAll = function() { };
+
+  var digitalWrite = function(name, value) {
+	console.log('set pin ' + name + ' -> ' + value);
+        pins[name] = value;
+        changed(name);
+  };
+
   return {
       pins: pins,
       pinMode: function(name, mode) {
@@ -116,6 +138,7 @@ function createFakeBoard() {
           if (mode === 'input') {
               pins[name] = 0;
           }
+	  console.log('pin mode: ' + name + ' - ' + mode);
       },
       getPinMode: function(name, h) {
           h(pinModes[name]);
@@ -126,9 +149,17 @@ function createFakeBoard() {
       digitalRead: function(name, handler) {
           handler({value: pins[name]});
       },
-      digitalWrite: function(name, value) {
-          pins[name] = value;
-          changed(name);
+      digitalWrite: digitalWrite,
+      onDigitalWriteAll: function(handler) {
+	  changedAll = handler;
+      },
+      digitalWriteAll: function(pins) {
+          console.log('write all {');
+	  pins.forEach(function(pin) {
+	      digitalWrite(pin.pin, pin.value);
+	  });
+	  console.log('}');
+	  changedAll(pins);
       }
-    };
+  };
 };
