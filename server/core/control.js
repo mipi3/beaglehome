@@ -73,7 +73,7 @@ module.exports = function(config, ee) {
 
                 inPins[name].value = value;
 		var group = inPins[name].group;
-                group.state = !group.state;
+                group.state = 1 - group.state;
 
 		group.out.forEach(function(o) {
 		    outPins[o].value = group.state;
