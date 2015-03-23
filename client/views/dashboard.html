@@ -8,12 +8,12 @@
 
 <div style="margin-top:10px">
 
-  <div class="input-group" ng-repeat="i in data.out">
-    <span class="input-group-addon">{{ i.pin }}</span>
+  <div class="input-group" ng-repeat="i in data.rooms['kitchen']">
+    <span class="input-group-addon">{{ i.name }}</span>
     <!-- <input type="checkbox" ng-model="i.value" switch> -->
     <!-- <switch ng-model="i.value" /> -->
-    <input bs-switch type="checkbox" ng-model="i.value">
-    {{ i.value }}
+    <input bs-switch type="checkbox" ng-model="i.state">
+
   </div>
     
 </div>

@@ -16,6 +16,8 @@ app.config(function($routeProvider) {
   });
 });
 
+app.factory('dashboardSrvc', require('./services/dashboard'));
+
 app.controller('dashboardCtrl', require('./controllers/dashboard'));
 
 app.directive('bsSwitch', require('./directives/bootstrap-switch'));

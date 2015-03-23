@@ -34,16 +34,20 @@ module.exports = function(config, ee) {
          
         _.forEach(link.in, setPin(group, inPins));
 
-	link.out.forEach(function(o) {
-	    group.out.push(getLinkPin(o));
-	    setPin(group, outPins)(o);
-	});
+	link.out.forEach(setOutPinGroup(group));
 
 	//set layout by room
         if (rooms[link.room] === undefined) {
 	    rooms[link.room] = [];
 	}
         rooms[link.room].push(group);
+    }
+
+    function setOutPinGroup(group) {
+	return function(o) {
+	    group.out.push(getLinkPin(o));
+	    setPin(group, outPins)(o);
+	};
     }
 
     function getInPins() {

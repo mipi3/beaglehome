@@ -36,23 +36,23 @@ console.log(' 1 - on');
 console.log(' 2 - off');
 rl.on('line', function(text){
    // console.log(text[0]);
-    if (text[0] == '0') {
+    if (text[0] === '0') {
        board.pins[selectedPin] = 0;
     }
-    else if (text[0] == '1')
+    else if (text[0] === '1')
     {
        board.pins[selectedPin] = 1;
     }
-    else if (text[0] == 's') {
+    else if (text[0] === 's') {
       console.log(selectedPin);
     }
-    else if (text[0] == 'S') {
+    else if (text[0] === 'S') {
 	selectedPin = text.substr(1,text.length-1);
     }
-    else if (text[0] == 'c') {
+    else if (text[0] === 'c') {
 	console.log(JSON.stringify(config, null, 4));
     }
-})
+});
 
 Server.start(Router.route, handle, 8888);
 
