@@ -5,8 +5,9 @@ module.exports = function() {
     return {
         restrict: 'A',
         require: 'ngModel',
-        link: function(scope, element, attrs) {
-            element.bootstrapSwitch();
+        link: function(scope, element, attrs, controller) {
+            element.bootstrapSwitch('state', attrs.ngDefault == 1, true);
+            console.log(attrs.ngDefault);
 
                 scope.$watch(attrs.ngModel, function(newValue) {
                     //initMaybe();
@@ -14,6 +15,23 @@ module.exports = function() {
                         element.bootstrapSwitch('state', newValue, true);
                     }
                 }, true);
+
+            /**
+             * Listen to view changes.
+             */
+            var listenToView = function () {
+                // When the switch is clicked, set its value into the ngModel
+                element.on('switchChange.bootstrapSwitch', function (e, data) {
+                    // $setViewValue --> $viewValue --> $parsers --> $modelValue
+		    //console.log('hi' + attrs.ngModel);
+		    scope.$eval(attrs.ngModel + "=" + (data ? 1 : 0));
+                    //scope.$apply();
+                    //controller.$setViewValue((data ? 1 : 0));
+                });
+            };
+
+            //Listen and respond to view changes
+            listenToView();
             
         }
     };

@@ -1,18 +1,12 @@
 'use strict';
 
-module.exports = function($scope, $http, dashboardSrvc) {
-    $scope.name = 'hi m ';
+module.exports = function($scope, $http, $routeParams, dashboardSrvc) {
 
     $scope.data = dashboardSrvc;
-    console.log(dashboardSrvc);
 
-    // updateDashboard();
+    if ($routeParams.room) {
 
-    // function updateDashboard() {
-    // 	$http.get('/api/dashboard').success(function(data) {
-    //         console.log(data);
-    //         $scope.data = data;
-    // 	    $timeout(updateDashboard, 200);
-    // 	}).error(updateDashboard);
-    // }
+	dashboardSrvc.selected = $routeParams.room;
+    }
+
 };

@@ -11,23 +11,30 @@ module.exports = function($http, $timeout) {
 	$http.get('/api/layout').success(function(data) {
             //console.log(data);
 	    for (var room in data) {
+		
+		if (layout.rooms[room] === undefined) {
+		    layout.rooms[room] = { turnedOn: 0, sw: {}};
+		}
+
+		layout.rooms[room].turnedOn = 0;
 
 		data[room].forEach(function(sw) {
 		    
-		    if (layout.rooms[room] === undefined) {
-			layout.rooms[room] = {};
+		    if (layout.selected === undefined) {
+			layout.selected = room;
 		    }
 
-		    if (layout.rooms[room][sw.name] === undefined) {
-			layout.rooms[room][sw.name] = { name: sw.name, state: 0 };
+		    if (layout.rooms[room].sw[sw.name] === undefined) {
+			layout.rooms[room].sw[sw.name] = { name: sw.name, state: 0 };
 		    }
 
-		    layout.rooms[room][sw.name].state = sw.state;
+		    layout.rooms[room].sw[sw.name].state = sw.state;
+		    layout.rooms[room].turnedOn += sw.state;
 		    
 		});
 	    }
 
-	    $timeout(updateDashboard, 300);
+	    $timeout(updateDashboard, 3000);
 	}).error(updateDashboard);
     }
 

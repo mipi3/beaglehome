@@ -7,6 +7,6 @@
     },
     "links": [
         { "name": "kitchen-1", "room": "kitchen", "in":["s_k-1"], "out":["r_k-1", "r_k-2"] },
-        { "name": "kitchen-2", "room": "kitchen", "in":["s_k-2"], "out":["r_k-2"] }
+        { "name": "kitchen-2", "room": "bedroom", "in":["s_k-2"], "out":["r_k-2"] }
     ]
 }

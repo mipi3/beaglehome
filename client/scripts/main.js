@@ -7,7 +7,10 @@ var app = angular.module('bhApp', ['ngRoute']);
 
 app.config(function($routeProvider) {
 
-  $routeProvider.when('/', {
+  $routeProvider.when('/:room', {
+    templateUrl: 'views/dashboard.html',
+    controller: 'dashboardCtrl',
+  }).when('/', {
     templateUrl: 'views/dashboard.html',
     controller: 'dashboardCtrl',
   })
