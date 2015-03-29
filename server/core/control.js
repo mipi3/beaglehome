@@ -6,6 +6,7 @@ module.exports = function(config, ee) {
     var outPins = {};
     var listener = function() {};
     var rooms = {};
+    var groups = [];
 
     // get pin by from id
     // 's_k-1' -> 'P8_14'
@@ -41,6 +42,7 @@ module.exports = function(config, ee) {
 	    rooms[link.room] = [];
 	}
         rooms[link.room].push(group);
+        groups.push(group);
     }
 
     function setOutPinGroup(group) {
@@ -68,6 +70,20 @@ module.exports = function(config, ee) {
         }, []);
     }
 
+    function setLinkState(name, value) {
+        groups.forEach(function(group) {
+            if (group.name === name) {
+                group.state = value;
+
+		group.out.forEach(function(o) {
+		    outPins[o].value = group.state;
+		});
+
+                ee.emit('outputChanged', getOutPins());
+            }
+        });
+    }
+
     return {
         setListener: function(l) {
             listener = l;
@@ -83,10 +99,6 @@ module.exports = function(config, ee) {
 		    outPins[o].value = group.state;
 		});
 
-                // todo set ouput values from group.out array
-                // foreach o => o.value = group.state
-                
-
                 ee.emit('switchesChanged', getInPins());
                 ee.emit('outputChanged', getOutPins());
             }
@@ -94,6 +106,7 @@ module.exports = function(config, ee) {
 	getLayout: function() {
 	    return rooms;
 	},
+        setLinkState: setLinkState,
         getInPins: getInPins,
         getOutPins: getOutPins
     };

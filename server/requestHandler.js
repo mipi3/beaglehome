@@ -7,7 +7,7 @@ exports.dashboard = function(ctrl) {
             in: ctrl.getInPins()
         }, null, 2);
         
-        response.writeHead(200, {"Content-Type": "text/plain"});
+        response.writeHead(200, {"Content-Type": "application/json"});
         response.write(jsonState);
         response.end();
     };
@@ -18,8 +18,22 @@ exports.layout = function(ctrl) {
 
         var jsonState = JSON.stringify(ctrl.getLayout(), null, 2);
         
-        response.writeHead(200, {"Content-Type": "text/plain"});
+        response.writeHead(200, {"Content-Type": "application/json"});
         response.write(jsonState);
+        response.end();
+    };
+};
+
+exports.switch = function(ctrl) {
+    return function(response, data) {
+
+        //var jsonState = JSON.stringify(ctrl.getLayout(), null, 2);
+        console.log(data);
+        for (sw in data) {
+            ctrl.setLinkState(sw, (data[sw] === '1') ? 1 : 0);
+        }
+        response.writeHead(200);
+        //response.write(jsonState);
         response.end();
     };
 };

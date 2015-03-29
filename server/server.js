@@ -7,8 +7,7 @@ function start(route, handle, port) {
 
     function onRequest(request, response) {
         var pathname = url.parse(request.url).pathname;
-        var postData = url.parse(request.url).query;
-        
+        var postData = parseQuery(url.parse(request.url).query);
         if (DEBUG === true) {
             console.log("Request for " + pathname + " received.");
             console.log("postData " + postData);
@@ -38,3 +37,16 @@ function start(route, handle, port) {
 }
 
 exports.start = start;
+
+function parseQuery(query) {
+    var obj = {};
+
+    if (typeof query === 'string') {
+        var vars = query.split('&');
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split('=');
+            obj[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+        }
+    }
+    return obj;
+}

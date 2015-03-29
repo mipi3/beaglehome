@@ -26,6 +26,7 @@ switcher.start();
 var handle = {};
 handle["/api/dashboard"] = RequestHandlers.dashboard(ctrl);
 handle["/api/layout"] = RequestHandlers.layout(ctrl);
+handle["/api/switch"] = RequestHandlers.switch(ctrl);
 
 var selectedPin = ctrl.getInPins()[0].pin;
 console.log('selected in pin: ' + selectedPin);

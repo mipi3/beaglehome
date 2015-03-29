@@ -15,7 +15,7 @@
       <span class="input-group-addon">{{ i.name }}</span>
       <!-- <input type="checkbox" ng-model="i.value" switch> -->
       <!-- <switch ng-model="i.value" /> -->
-      <input bs-switch type="checkbox" ng-default="{{i.state}}" ng-model="i.state">
+      <input bs-switch type="checkbox" ng-change="i.change()" ng-default="{{i.state}}" ng-model="i.state">
       <span>{{i.state}}</span>
     </div>
 
