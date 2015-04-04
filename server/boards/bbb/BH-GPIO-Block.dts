@@ -1,0 +1,113 @@
+/*  
+* Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Purpose License Version 2 as
+* published by the Free Software Foundation
+*
+* Original from: github.com/jadonk/validation-scripts/blob/master/test-capemgr/ 
+*
+* Modified by Derek Molloy for the example on www.derekmolloy.ie
+* that maps GPIO pins for the example
+*/
+
+/dts-v1/;
+/plugin/;
+
+/{
+       compatible = "ti,beaglebone", "ti,beaglebone-black";
+       part-number = "BH-GPIO-Block";
+       version = "00A0";
+
+       fragment@0 {
+             target = <&am33xx_pinmux>;
+            
+             __overlay__ {
+                  pinctrl_test: bh_switches_relays_pins {
+			pinctrl-single,pins = <
+
+				0x078 0x27	/* P9_12 INPUT MODE7 - SWITCH */
+				0x048 0x27	/* P9_14 INPUT MODE7 - SWITCH */
+				0x04C 0x27	/* P9_16 INPUT MODE7 - SWITCH */
+				0x15C 0x27	/* P9_17 INPUT MODE7 - SWITCH */
+				0x158 0x27	/* P9_18 INPUT MODE7 - SWITCH */
+				0x154 0x27	/* P9_21 INPUT MODE7 - SWITCH */
+				0x150 0x27	/* P9_22 INPUT MODE7 - SWITCH */
+				0x044 0x27	/* P9_23 INPUT MODE7 - SWITCH */
+				0x184 0x27	/* P9_24 INPUT MODE7 - SWITCH */
+				0x1AC 0x27	/* P9_25 INPUT MODE7 - SWITCH */
+				0x180 0x27	/* P9_26 INPUT MODE7 - SWITCH */
+				0x1A4 0x27	/* P9_27 INPUT MODE7 - SWITCH */
+				0x19C 0x27	/* P9_28 INPUT MODE7 - SWITCH */
+				0x194 0x27	/* P9_29 INPUT MODE7 - SWITCH */
+				0x198 0x27	/* P9_30 INPUT MODE7 - SWITCH */
+				0x190 0x27	/* P9_31 INPUT MODE7 - SWITCH */
+				0x1B4 0x27	/* P9_41 INPUT MODE7 - SWITCH */
+				0x164 0x27	/* P9_42 INPUT MODE7 - SWITCH */
+				0x018 0x27	/* P8_03 INPUT MODE7 - SWITCH */
+				0x01C 0x27	/* P8_04 INPUT MODE7 - SWITCH */
+				0x008 0x27	/* P8_05 INPUT MODE7 - SWITCH */
+				0x00C 0x27	/* P8_06 INPUT MODE7 - SWITCH */
+				0x090 0x27	/* P8_07 INPUT MODE7 - SWITCH */
+				0x094 0x27	/* P8_08 INPUT MODE7 - SWITCH */
+				0x09C 0x27	/* P8_09 INPUT MODE7 - SWITCH */
+				0x098 0x27	/* P8_10 INPUT MODE7 - SWITCH */
+				0x034 0x27	/* P8_11 INPUT MODE7 - SWITCH */
+				0x030 0x27	/* P8_12 INPUT MODE7 - SWITCH */
+				0x024 0x27	/* P8_13 INPUT MODE7 - SWITCH */
+				0x028 0x27	/* P8_14 INPUT MODE7 - SWITCH */	
+
+
+				0x03C 0x07	/* P8_15 47 OUTPUT MODE7 - RELAY B1 */
+				0x038 0x07	/* P8_16 46 OUTPUT MODE7 - RELAY A1 */
+				0x02C 0x07	/* P8_17 27 OUTPUT MODE7 - RELAY B2 */
+				0x08C 0x07	/* P8_18 65 OUTPUT MODE7 - RELAY A2 */
+				0x020 0x07	/* P8_19 22 OUTPUT MODE7 - RELAY B3 */
+				0x084 0x07	/* P8_20 63 OUTPUT MODE7 - RELAY A3 */
+				0x080 0x07	/* P8_21 62 OUTPUT MODE7 - RELAY B4 */
+				0x014 0x07	/* P8_22 37 OUTPUT MODE7 - RELAY A4 */
+				0x010 0x07	/* P8_23 36 OUTPUT MODE7 - RELAY B5 */
+				0x004 0x07	/* P8_24 33 OUTPUT MODE7 - RELAY A5 */
+				0x000 0x07	/* P8_25 32 OUTPUT MODE7 - RELAY B6 */
+				0x07C 0x07	/* P8_26 61 OUTPUT MODE7 - RELAY A6 */
+				0x0E0 0x07	/* P8_27 86 OUTPUT MODE7 - RELAY B7 */
+				0x0E8 0x07	/* P8_28 88 OUTPUT MODE7 - RELAY A7 */
+				0x0E4 0x07	/* P8_29 87 OUTPUT MODE7 - RELAY B8 */
+				0x0EC 0x07	/* P8_30 89 OUTPUT MODE7 - RELAY A8 */
+				0x0D8 0x07	/* P8_31 10 OUTPUT MODE7 - RELAY B9 */
+				0x0DC 0x07	/* P8_32 11 OUTPUT MODE7 - RELAY A9 */
+				0x0D4 0x07	/* P8_33 9  OUTPUT MODE7 - RELAY B10 */
+				0x0CC 0x07	/* P8_34 81 OUTPUT MODE7 - RELAY A10 */
+				0x0D0 0x07	/* P8_35 8  OUTPUT MODE7 - RELAY B11 */
+				0x0C8 0x07	/* P8_36 80 OUTPUT MODE7 - RELAY A11 */
+				0x0C0 0x07	/* P8_37 78 OUTPUT MODE7 - RELAY B12 */
+				0x0C4 0x07	/* P8_38 79 OUTPUT MODE7 - RELAY A12 */
+				0x0B8 0x07	/* P8_39 76 OUTPUT MODE7 - RELAY B13 */
+				0x0BC 0x07	/* P8_40 77 OUTPUT MODE7 - RELAY A13 */
+				0x0B0 0x07	/* P8_41 74 OUTPUT MODE7 - RELAY B14 */
+				0x0B4 0x07	/* P8_42 75 OUTPUT MODE7 - RELAY A14 */
+				0x0A8 0x07	/* P8_43 72 OUTPUT MODE7 - RELAY B15 */
+				0x0AC 0x07	/* P8_44 73 OUTPUT MODE7 - RELAY A15 */
+				0x0A0 0x07	/* P8_45 70 OUTPUT MODE7 - RELAY B16 */
+				0x0A4 0x07	/* P8_46 71 OUTPUT MODE7 - RELAY A16 */
+
+                               /* OUTPUT  GPIO(mode7) 0x07 pulldown, 0x17 pullup, 0x?f no pullup/down */
+			       /* INPUT   GPIO(mode7) 0x27 pulldown, 0x37 pullup, 0x?f no pullup/down */
+
+			>;
+		  };
+             };
+       };
+
+       fragment@1 {
+		target = <&ocp>;
+		__overlay__ {
+			test_helper: helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_test>;
+				status = "okay";
+			};
+		};
+	};
+};
